@@ -1,35 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <title>Counts by seiflotfy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>Counts by seiflotfy</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Counts</h1>
-        <h2>A domain-counter data store</h2>
-        <a href="https://github.com/seiflotfy/counts" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">Counts</h1>
+      <h2 class="project-tagline">A domain-counter data store</h2>
+      <a href="https://github.com/seiflotfy/counts" class="btn">View on GitHub</a>
+      <a href="https://github.com/seiflotfy/counts/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/seiflotfy/counts/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h3>
+    <section class="main-content">
+      <h3>
 <a id="what-is-counts" class="anchor" href="#what-is-counts" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is counts?</h3>
+
+<h5>
+<a id="tldr" class="anchor" href="#tldr" aria-hidden="true"><span class="octicon octicon-link"></span></a>TL;DR</h5>
 
 <p>Counts is an open source, Apache licensed, probabilistic data-structures distributed cache and store, serving the following type of counts:</p>
 
@@ -41,6 +35,67 @@
 <li>topk (using topK): </li>
 </ul>
 
+<h5>
+<a id="more-details" class="anchor" href="#more-details" aria-hidden="true"><span class="octicon octicon-link"></span></a>More details</h5>
+
+<p>A domain-counter data store to deal with all problems around counting using probabilistic data-structures.</p>
+
+<p>Unlike a Key-Value store, counts does not store values, but rather keeps track of keys added to a domain, allowing you to solve frequency and cardinality queries in near O(1) time, with minimal memory footprint.</p>
+
+<p><b>Note:</b> Data structures that can grow too big to reside in memory are read and written from/to disk directly via open stream to make sure we can maintain a high number of counters.</p>
+
+<h3>
+<a id="use-cases" class="anchor" href="#use-cases" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use cases?</h3>
+
+<ul>
+<li>Is this URI in my spam list? (spam list over a million entries)</li>
+<li>How many users like my post? (a like being subject to change)</li>
+<li>How may times did oliver watch this video? (counting frequencies)</li>
+<li>How many unique users visited my website in the last 3 hours? (sliding hyperloglog)</li>
+<li>Who are the top 10 users contributing to my code? (top)</li>
+</ul>
+
+<h3>
+<a id="api-documentation" class="anchor" href="#api-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>API-Documentation</h3>
+
+<pre><code>GET /
+Lists all available counters.
+
+MERGE   /
+Merges multiple HyperLogLog counters.
+
+POST    /&lt;key&gt;
+Creates a new Counter.
+
+GET /&lt;key&gt;
+Returns the count/cardinality of a counter.
+
+PUT /&lt;key&gt;
+Updates a counter by adding values to a counter.
+
+PURGE   /&lt;key&gt;
+Purges values from a counter.
+
+DELETE  /&lt;key&gt;
+Deletes a counter.
+</code></pre>
+
+<h3>
+<a id="milestones" class="anchor" href="#milestones" aria-hidden="true"><span class="octicon octicon-link"></span></a>Milestones</h3>
+
+<ul>
+<li>[x] Design and implement REST API</li>
+<li>[x] Create counter manager</li>
+<li>[x] Integrate Cardinality Counter (Hyperloglog++)</li>
+<li>[x] Integrate CardinalityPurgable Counter (CuckooFilter and possibly play with the idea of CuckooLogLog)</li>
+<li>[ ] Integrate Frequency Counter (Count-Min-Log sketch)</li>
+<li>[ ] Integrate FrequencyPurgable Counter (Count-Min sketch)</li>
+<li>[ ] Integrate Expiring Counter (Sliding Hyperloglog)</li>
+<li>[ ] Integrate Top (TopK)</li>
+<li>[x] Store to Disk</li>
+<li>[ ] Replication on multiple servers</li>
+</ul>
+
 <h3>
 <a id="authors--contributors" class="anchor" href="#authors--contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors &amp; Contributors</h3>
 
@@ -49,24 +104,14 @@
 <li><a href="https://github.com/mbarkhau" class="user-mention">@mbarkhau</a></li>
 <li><a href="https://github.com/martinpinto" class="user-mention">@martinpinto</a></li>
 </ul>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/seiflotfy/counts/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/seiflotfy/counts/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/seiflotfy/counts">Counts</a> is maintained by <a href="https://github.com/seiflotfy">seiflotfy</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/seiflotfy/counts"></a> is maintained by <a href="https://github.com/seiflotfy">seiflotfy</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
   
   </body>
