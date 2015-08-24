@@ -3,10 +3,9 @@ package storage
 import (
 	"os"
 
+	"github.com/hashicorp/golang-lru"
 	"github.com/seiflotfy/skizze/config"
 	"github.com/seiflotfy/skizze/utils"
-
-	"github.com/hashicorp/golang-lru"
 )
 
 var conf *config.Config

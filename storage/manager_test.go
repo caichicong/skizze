@@ -6,10 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/boltdb/bolt"
 	"github.com/seiflotfy/skizze/config"
 	"github.com/seiflotfy/skizze/utils"
-
-	"github.com/boltdb/bolt"
 )
 
 func setupTests() {
@@ -39,6 +38,7 @@ func TestNoCounters(t *testing.T) {
 	m1.Create("marvel")
 	data1 := []byte("wolverine")
 	m1.SaveData("marvel", data1, 0)
+	m1.FlushData("marvel")
 	data2, err := m2.LoadData("marvel", 0, 0)
 	if err != nil {
 		t.Error("Expected no error loading data, got", err)
