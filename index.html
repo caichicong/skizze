@@ -1,121 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <title>Skizze by seiflotfy</title>
 
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <title>Skizze by seiflotfy</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Skizze</h1>
-        <h2>A domain-sketch data store</h2>
-        <a href="https://github.com/seiflotfy/skizze" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Skizze</h1>
+        <p class="header">A remote sketch storage for data streams</p>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h3>
-<a id="what-is-skizze" class="anchor" href="#what-is-skizze" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is Skizze?</h3>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/seiflotfy/skizze/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/seiflotfy/skizze/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/seiflotfy/skizze">View On GitHub</a></li>
+        </ul>
 
-<h5>
-<a id="tldr" class="anchor" href="#tldr" aria-hidden="true"><span class="octicon octicon-link"></span></a>TL;DR</h5>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/seiflotfy">seiflotfy</a></p>
 
-<p>Skizze is an open source, Apache licensed, probabilistic data-structures distributed cache and store, serving the following type of counts:</p>
 
-<ul>
-<li>cardinality (using HyperLogLog++): </li>
-<li>purgable cardinality (using Cuckoofilter): </li>
-<li>frequency (using Count-Min-Log sketch): </li>
-<li>purgable frequency (using Count-Mean-Min sketch): </li>
-<li>topk (using topK): </li>
-</ul>
+      </header>
+      <section>
+        <h1>
+<a id="skizze" class="anchor" href="#skizze" aria-hidden="true"><span class="octicon octicon-link"></span></a>Skizze</h1>
 
-<h5>
-<a id="more-details" class="anchor" href="#more-details" aria-hidden="true"><span class="octicon octicon-link"></span></a>More details</h5>
+<p>Skizze ([ˈskɪt͡sə]: german for sketch) is a sketch data store to deal with all problems around counting and sketching using probabilistic data-structures.</p>
 
-<p>A domain-counter data store to deal with all problems around counting using probabilistic data-structures.</p>
+<p>Unlike a Key-Value store, Skizze does not store values, but rather appends values to a defined sketches, allowing one to solve frequency and cardinality queries in near O(1) time, with minimal memory footprint.</p>
 
-<p>Unlike a Key-Value store, counts does not store values, but rather keeps track of keys added to a domain, allowing you to solve frequency and cardinality queries in near O(1) time, with minimal memory footprint.</p>
+<p><b>Note:</b> Data structures that can grow too big to reside in memory are read and written from/to disk directly via open stream to make sure we can maintain a high number of sketches.</p>
 
-<p><b>Note:</b> Data structures that can grow too big to reside in memory are read and written from/to disk directly via open stream to make sure we can maintain a high number of counters.</p>
+<h4>
+<a id="current-status--pre-alpha" class="anchor" href="#current-status--pre-alpha" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current status ==&gt; pre-Alpha</h4>
 
-<h3>
-<a id="use-cases" class="anchor" href="#use-cases" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use cases?</h3>
+<h2>
+<a id="motivation" class="anchor" href="#motivation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation</h2>
 
-<ul>
-<li>Is this URI in my spam list? (spam list over a million entries)</li>
-<li>How many users like my post? (a like being subject to change)</li>
-<li>How may times did oliver watch this video? (counting frequencies)</li>
-<li>How many unique users visited my website in the last 3 hours? (sliding hyperloglog)</li>
-<li>Who are the top 10 users contributing to my code? (top)</li>
-</ul>
+<p>Statistical analysis and mining of huge multi-terabyte data sets is a common task nowadays, especially in the areas like web analytics and Internet advertising. Analysis of such large data sets often requires powerful distributed data stores like Hadoop and heavy data processing with techniques like MapReduce. This approach often leads to heavyweight high-latency analytical processes and poor applicability to realtime use cases. On the other hand, when one is interested only in simple additive metrics like total page views or average price of conversion, it is obvious that raw data can be efficiently summarized, for example, on a daily basis or using simple in-stream counters.  Computation of more advanced metrics like a number of unique visitor or most frequent items is more challenging and requires a lot of resources if implemented straightforwardly.</p>
 
-<h3>
-<a id="api-documentation" class="anchor" href="#api-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>API-Documentation</h3>
+<p>Skizze is a (fire and forget) service that provides a probabilistic data structures (sketches) storage that allow one to estimate these and many other metrics and trade precision of the estimations for the memory consumption. These data structures can be used both as temporary data accumulators in query processing procedures and, perhaps more important, as a compact – sometimes astonishingly compact – replacement of raw data in stream-based computing.</p>
 
-<pre><code>GET /
-Lists all available counters.
-
-MERGE   /
-Merges multiple HyperLogLog counters.
-
-POST    /&lt;key&gt;
-Creates a new Counter.
-
-GET /&lt;key&gt;
-Returns the count/cardinality of a counter.
-
-PUT /&lt;key&gt;
-Updates a counter by adding values to a counter.
-
-PURGE   /&lt;key&gt;
-Purges values from a counter.
-
-DELETE  /&lt;key&gt;
-Deletes a counter.
-</code></pre>
-
-<h3>
-<a id="authors--contributors" class="anchor" href="#authors--contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors &amp; Contributors</h3>
+<h2>
+<a id="example-queriesuse-cases" class="anchor" href="#example-queriesuse-cases" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example queries/use cases?</h2>
 
 <ul>
-<li><a href="https://github.com/seiflotfy" class="user-mention">@seiflotfy</a></li>
-<li><a href="https://github.com/mbarkhau" class="user-mention">@mbarkhau</a></li>
-<li><a href="https://github.com/martinpinto" class="user-mention">@martinpinto</a></li>
+<li>How many distinct elements are in the data set (i.e. what is the cardinality of the data set)?</li>
+<li>What are the most frequent elements (the terms “heavy hitters” and “top-k elements” are also used)?</li>
+<li>What are the frequencies of the most frequent elements?</li>
+<li>How many elements belong to the specified range (range query, in SQL it looks like <code>SELECT count(v) WHERE v &gt;= c1 AND v &lt; c2)?</code>
+</li>
+<li>Does the data set contain a particular element (membership query)?</li>
 </ul>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/seiflotfy/skizze/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/seiflotfy/skizze/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+<h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
 
-          <p class="repo-owner"><a href="https://github.com/seiflotfy/skizze"></a> is maintained by <a href="https://github.com/seiflotfy">seiflotfy</a>.</p>
+<h3>
+<a id="restful-api" class="anchor" href="#restful-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>RESTful API</h3>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Route</th>
+<th>Parameters</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/</td>
+<td>N/A</td>
+<td>Lists all available sketches (sketches)</td>
+</tr>
+<tr>
+<td>MERGE</td>
+<td>/</td>
+<td>not implemented yet</td>
+<td>Merges multiple sketches of the same  if they support merging</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/$type/$id</td>
+<td>{"capacity": uint64}</td>
+<td>Creates a new  sketch with id: </td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/$type/$id</td>
+<td>(optional) {"values": [string, string]}</td>
+<td>Get cardinality/frequency/rank of a sketch (for given values if supported by the sketch type)</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/$type/$id</td>
+<td>{"values": [string, string]}</td>
+<td>Updates a sketch by adding values to it</td>
+</tr>
+<tr>
+<td>PURGE</td>
+<td>/$type/$id</td>
+<td>{"values": [string, string]}</td>
+<td>Updates a sketch by purging values from it</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/$type/$id</td>
+<td>N/A</td>
+<td>Deletes a sketch.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="sketch-types" class="anchor" href="#sketch-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sketch Types</h3>
+
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>purpose</th>
+<th>Sketch</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hllpp</td>
+<td>cardinality</td>
+<td>HyperLogLog++</td>
+<td>query unique items from all added values</td>
+<td>capacity up to billions, does not support purging added values</td>
+</tr>
+<tr>
+<td>cml</td>
+<td>frequency</td>
+<td>Count-Min-Log Sketch</td>
+<td>query frequency of unique values added</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>topk</td>
+<td>rank + frequncy</td>
+<td>Top-k Sketch</td>
+<td>query the top k values added to the sketch</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
-
-  
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
   </body>
 </html>
