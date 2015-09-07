@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="documentup.min.js"></script>
+    <script>
+      //DocumentUp.document("seiflotfy/skizze");
+      DocumentUp.document({
+        repo:  "seiflotfy/skizze",
+        name: "Skizze",
+        twitter: [
+          "seiflotfy"
+        ],
+        travis: true,
+        issues: true
+      });
+    </script>
+  </head>
+  <body></body>
+</html>
